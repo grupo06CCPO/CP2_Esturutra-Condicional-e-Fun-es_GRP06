@@ -3,3 +3,4 @@
 #Integrantes do grupo 06
 
 Ana Julia Yumi Inoue - RM: 569430
+Júlia Nunes Frederici - RM: 569858
