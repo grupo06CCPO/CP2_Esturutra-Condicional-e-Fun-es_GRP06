@@ -4,3 +4,4 @@
 
 Ana Julia Yumi Inoue - RM: 569430 / 
 Júlia Nunes Frederici - RM: 569858
+Maria Fernanda Dias - RM: 569999
