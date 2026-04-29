@@ -1,4 +1,4 @@
-# pcp_1sem_cp2_ex03.py
+# EX03_CP2.py
 
 # Entrada de dados
 cp1 = float(input("Digite a nota do Checkpoint 1: "))
