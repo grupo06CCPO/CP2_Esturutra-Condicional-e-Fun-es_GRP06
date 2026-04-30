@@ -1,0 +1,20 @@
+a = float(input("Digite o lado A: "))
+b = float(input("Digite o lado B: "))
+c = float(input("Digite o lado C: "))
+
+a, b, c = sorted([a, b, c], reverse=True) #linha para sempre manter o lado A como maior
+
+if a >= b + c:
+    print("NAO FORMA TRIANGULO")
+else:
+    a2, b2, c2 = a**2, b**2, c**2
+    if a == b == c:
+        print("TRIANGULO EQUILATERO")
+    elif a == b or b == c or a == c:
+        print("TRIANGULO ISOSCELES")
+    elif a2 == b2 + c2:
+        print("TRIANGULO RETANGULO")
+    elif a2 > b2 + c2:
+        print("TRIANGULO OBTUSANGULO")
+    else:
+        print("TRIANGULO ACUTANGULO")
