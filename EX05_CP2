@@ -1,0 +1,148 @@
+def pode_aprovar(idade, renda, valor):
+    """Verifica se o cliente pode ser aprovado e retorna lista de motivos de recusa."""
+    motivos = []
+    if idade < 18:
+        motivos.append(f"Idade mínima de 18 anos não atingida (idade informada: {idade} anos).")
+    limite = renda * 20
+    if valor > limite:
+        motivos.append(
+            f"Valor solicitado (R$ {valor:,.2f}) excede 20x a renda mensal "
+            f"(limite: R$ {limite:,.2f})."
+        )
+    return motivos
+
+
+def definir_taxa(parcelas):
+    """Retorna a taxa de juros mensal conforme o número de parcelas."""
+    if parcelas <= 6:
+        return 0.05   # 5% ao mês
+    elif parcelas <= 12:
+        return 0.08   # 8% ao mês
+    else:
+        return 0.10   # 10% ao mês
+
+
+def calcular_parcela(valor, taxa, parcelas):
+    """Calcula o valor da parcela fixa pela fórmula da Tabela Price (PMT).
+    
+    PMT = PV * [i(1+i)^n] / [(1+i)^n - 1]
+    """
+    i = taxa
+    n = parcelas
+    pv = valor
+    # CORREÇÃO: usar ** para potenciação, não *
+    fator = (i * (1 + i) ** n) / ((1 + i) ** n - 1)
+    return pv * fator
+
+
+def calcular_total(parcela, parcelas):
+    """Calcula o valor total pago ao longo do financiamento."""
+    return parcela * parcelas
+
+
+def calcular_juros(total, valor):
+    """Calcula o total de juros pagos."""
+    return total - valor
+
+
+def ler_int(mensagem, minimo=None, maximo=None):
+    """Lê um inteiro do usuário com validação de intervalo."""
+    while True:
+        try:
+            valor = int(input(mensagem))
+            if minimo is not None and valor < minimo:
+                print(f"  Valor mínimo permitido: {minimo}.")
+                continue
+            if maximo is not None and valor > maximo:
+                print(f"  Valor máximo permitido: {maximo}.")
+                continue
+            return valor
+        except ValueError:
+            print("  Por favor, informe um número inteiro válido.")
+
+
+def ler_float(mensagem, minimo=0.01):
+    """Lê um número real do usuário com validação."""
+    while True:
+        try:
+            valor = float(input(mensagem).replace(",", "."))
+            if valor < minimo:
+                print(f"  O valor deve ser maior que {minimo}.")
+                continue
+            return valor
+        except ValueError:
+            print("  Por favor, informe um número válido.")
+
+
+def ler_parcelas():
+    """Lê o número de parcelas garantindo que esteja entre 3 e 24."""
+    return ler_int("Número de parcelas (3 a 24): ", minimo=3, maximo=24)
+
+
+def exibir_cabecalho():
+    linha = "=" * 52
+    print(f"\n{linha}")
+    print("       SISTEMA DE FINANCIAMENTO BANCÁRIO")
+    print(f"{linha}\n")
+
+
+def exibir_resultado_aprovado(nome, valor, taxa, parcela, total, juros, n_parcelas):
+    linha = "=" * 52
+    traco = "-" * 52
+    print(f"\n{linha}")
+    print("  ✔️  EMPRÉSTIMO APROVADO")
+    print(traco)
+    print(f"  Cliente          : {nome}")
+    print(f"  Valor financiado : R$ {valor:>12,.2f}")
+    print(f"  Taxa de juros    : {taxa * 100:.0f}% ao mês")
+    print(f"  Nº de parcelas   : {n_parcelas}×")
+    print(traco)
+    print(f"  Valor da parcela : R$ {parcela:>12,.2f}")
+    print(f"  Total pago       : R$ {total:>12,.2f}")
+    print(f"  Total de juros   : R$ {juros:>12,.2f}")
+    print(f"{linha}\n")
+
+
+def exibir_resultado_negado(nome, motivos):
+    linha = "=" * 52
+    traco = "-" * 52
+    print(f"\n{linha}")
+    print("  ✘  EMPRÉSTIMO NEGADO")
+    print(traco)
+    print(f"  Cliente: {nome}")
+    print(traco)
+    print("  Motivo(s) da reprovação:")
+    for m in motivos:
+        print(f"    • {m}")
+    print(f"{linha}\n")
+
+
+def main():
+    exibir_cabecalho()
+
+    nome = input("Nome do cliente          : ").strip()
+    while not nome:
+        print("  O nome não pode ficar em branco.")
+        nome = input("Nome do cliente          : ").strip()
+
+    idade = ler_int("Idade                    : ", minimo=0, maximo=120)
+    renda = ler_float("Renda mensal (R$)        : ")
+    valor = ler_float("Valor do empréstimo (R$) : ")
+    n_parc = ler_parcelas()
+
+    motivos = pode_aprovar(idade, renda, valor)
+    if motivos:
+        exibir_resultado_negado(nome, motivos)
+        return
+
+    taxa = definir_taxa(n_parc)
+    parcela = calcular_parcela(valor, taxa, n_parc)
+    total = calcular_total(parcela, n_parc)
+    juros = calcular_juros(total, valor)
+
+    exibir_resultado_aprovado(nome, valor, taxa, parcela, total, juros, n_parc)
+
+
+# CORREÇÃO: underscores duplos (__name__ e "__main__")
+if __name__ == "__main__":
+    main()
